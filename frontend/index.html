@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Feedback Collector</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    input, textarea { display: block; margin: 10px 0; width: 100%; padding: 8px; }
+    button { padding: 10px 20px; }
+    .feedback { margin-top: 20px; }
+    .feedback-item { border-bottom: 1px solid #ccc; padding: 10px 0; }
+  </style>
+</head>
+<body>
+  <h2>Leave Feedback</h2>
+  <input type="text" id="name" placeholder="Your Name" required />
+  <textarea id="message" placeholder="Your Feedback"></textarea>
+  <button onclick="submitFeedback()">Submit</button>
+
+  <div class="feedback" id="feedback-list"></div>
+
+  <script>
+    async function submitFeedback() {
+      const name = document.getElementById('name').value;
+      const message = document.getElementById('message').value;
+
+      await fetch('http://localhost:3001/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, message })
+      });
+
+      document.getElementById('name').value = '';
+      document.getElementById('message').value = '';
+      loadFeedback();
+    }
+
+    async function loadFeedback() {
+      const res = await fetch('http://localhost:3001/feedback');
+      const data = await res.json();
+
+      const list = document.getElementById('feedback-list');
+      list.innerHTML = '';
+      data.forEach(item => {
+        list.innerHTML += `<div class="feedback-item"><strong>${item.name}</strong>: ${item.message}</div>`;
+      });
+    }
+
+    loadFeedback();
+  </script>
+</body>
+</html>

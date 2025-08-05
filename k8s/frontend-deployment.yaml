@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: feedback-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: feedback-frontend
+  template:
+    metadata:
+      labels:
+        app: feedback-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: roobobo/feedback-frontend:latest
+          ports:
+            - containerPort: 80
